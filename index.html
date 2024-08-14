@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Earnings and Expenses Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #34495e;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .form-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .form-group label i {
+            margin-right: 10px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #dcdde1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #f9fafb;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #3498db;
+            background-color: #ecf5ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.1);
+        }
+        .form-group textarea {
+            height: 100px; /* Standard height */
+        }
+        .btn {
+            padding: 14px 22px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .report {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .report .report-box {
+            flex: 1;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+        }
+        .report .report-box i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .report .earnings {
+            background-color: #2ecc71; /* Green */
+        }
+        .report .expenses {
+            background-color: #e74c3c; /* Red */
+        }
+        .report .balance {
+            background-color: #3498db; /* Blue */
+        }
+        .entries {
+            margin-top: 40px;
+            position: relative;
+        }
+        .entries h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .entries .print-btn {
+            position: absolute;
+            top: -10px;
+            right: 0;
+            padding: 10px 16px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .entries .print-btn:hover {
+            background-color: #218c54;
+        }
+        .entries table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        .entries table, .entries th, .entries td {
+            border: 1px solid #e1e1e1;
+        }
+        .entries th, .entries td {
+            padding: 14px;
+            text-align: left;
+            font-size: 1rem;
+            color: #2c3e50;
+        }
+        .entries th {
+            background-color: #f4f6f8;
+            font-weight: 700;
+        }
+        .entries td {
+            background-color: #ffffff;
+        }
+        .entries tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .entries .delete-btn {
+            color: #e74c3c;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .entries .delete-btn:hover {
+            color: #c0392b;
+        }
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        .date-range-filter {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .date-range-filter .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .date-range-filter .filter-btn {
+            background-color:  #3498db;
+            margin-left: 10px;
+            padding: 12px 20px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .date-range-filter .filter-btn:hover {
+            background-color: #2980b9;
+        }
+        .date-range-filter .clear-btn {
+            background-color: #e74c3c;
+            margin-left: 10px;
+            padding: 12px 20px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .date-range-filter .clear-btn:hover {
+            background-color: #c0392b;
+        }
+        @media print {
+            body, .container {
+                background-color: white;
+                color: black;
+            }
+            .form-container, .report, .btn, h1, .entries .print-btn, .date-range-filter, .delete-column, .fas {
+                display: none;
+            }
+            .entries {
+                margin-top: 0;
+            }
+            .entries h2 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .entries th {
+                background-color: #e1e1e1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Earnings and Expenses Tracker</h1>
+        <div class="form-container">
+            <div class="form-group">
+                <label for="entryType"><i class="fas fa-tags"></i> Type (Earning/Expense):</label>
+                <select id="entryType">
+                    <option value="earning">Earning</option>
+                    <option value="expense">Expense</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount"><i class="fas fa-dollar-sign"></i> Amount:</label>
+                <input type="number" id="amount" placeholder="Enter amount" />
+            </div>
+            <div class="form-group">
+                <label for="source"><i class="fas fa-info-circle"></i> Source/Reason:</label>
+                <input type="text" id="source" placeholder="Enter source or reason" />
+            </div>
+            <div class="form-group">
+                <label for="date"><i class="fas fa-calendar-alt"></i> Date:</label>
+                <input type="date" id="date" />
+            </div>
+            <div class="form-group full-width">
+                <label for="details"><i class="fas fa-pencil-alt"></i> Additional Details:</label>
+                <textarea id="details" rows="3" placeholder="Enter additional details"></textarea>
+            </div>
+        </div>
+        <div>
+        <button class="btn" onclick="addEntry()"><i class="fas fa-plus"></i> Add Entry</button>
+        </div>
+        <div class="date-range-filter">
+            <div class="form-group">
+                <label for="startDate"><i class="fas fa-calendar-day"></i> Start Date:</label>
+                <input type="date" id="startDate" />
+            </div>
+            <div class="form-group">
+                <label for="endDate"><i class="fas fa-calendar-day"></i> End Date:</label>
+                <input type="date" id="endDate" />
+            </div>
+            <button class="filter-btn" onclick="filterEntries()"><i class="fas fa-filter"></i> Filter</button>
+            <button class="clear-btn" onclick="clearFilter()"><i class="fas fa-eraser"></i> Clear</button>
+        </div>
+        <div class="report">
+            <div class="report-box earnings">
+                <i class="fas fa-dollar-sign"></i>
+                <p id="totalEarnings">Total Earnings: $0</p>
+            </div>
+            <div class="report-box expenses">
+                <i class="fas fa-credit-card"></i>
+                <p id="totalExpenses">Total Expenses: $0</p>
+            </div>
+            <div class="report-box balance">
+                <i class="fas fa-balance-scale"></i>
+                <p id="balance">Balance: $0</p>
+            </div>
+        </div>
+        <div class="entries">
+            <h2><i class="fas fa-money-bill-wave"></i> Earnings</h2>
+            <button class="print-btn" onclick="printReports()"><i class="fas fa-print"></i> Print</button>
+            <div class="entries-table">
+                <table id="earningsTable">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-tags"></i> Type</th>
+                            <th><i class="fas fa-dollar-sign"></i> Amount</th>
+                            <th><i class="fas fa-info-circle"></i> Source/Reason</th>
+                            <th><i class="fas fa-calendar-alt"></i> Date</th>
+                            <th><i class="fas fa-pencil-alt"></i> Additional Details</th>
+                            <th class="delete-column"><i class="fas fa-trash-alt"></i> Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <h2><i class="fas fa-credit-card"></i> Expenses</h2>
+            <button class="print-btn" onclick="printReports()"><i class="fas fa-print"></i> Print</button>
+            <div class="entries-table">
+                <table id="expensesTable">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-tags"></i> Type</th>
+                            <th><i class="fas fa-dollar-sign"></i> Amount</th>
+                            <th><i class="fas fa-info-circle"></i> Source/Reason</th>
+                            <th><i class="fas fa-calendar-alt"></i> Date</th>
+                            <th><i class="fas fa-pencil-alt"></i> Additional Details</th>
+                            <th class="delete-column"><i class="fas fa-trash-alt"></i> Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+  <script>
+    let totalEarnings = 0;
+    let totalExpenses = 0;
+
+    // Load data from localStorage
+    window.onload = function() {
+        loadEntries();
+        updateReport();
+    };
+
+    function addEntry() {
+        const entryType = document.getElementById('entryType').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const source = document.getElementById('source').value;
+        const date = document.getElementById('date').value;
+        const details = document.getElementById('details').value;
+
+        if (isNaN(amount) || amount <= 0 || !source || !date) {
+            alert('Please enter all required fields with valid values.');
+            return;
+        }
+        
+        const entry = {
+            type: entryType === 'earning' ? 'Earning' : 'Expense',
+            amount: amount,
+            source: source,
+            date: date,
+            details: details
+        };
+
+        saveEntry(entry);
+
+        if (entryType === 'earning') {
+            totalEarnings += amount;
+            addToTable('earningsTable', 'Earning', amount, source, date, details);
+        } else if (entryType === 'expense') {
+            totalExpenses += amount;
+            addToTable('expensesTable', 'Expense', amount, source, date, details);
+        }
+
+        updateReport();
+    }
+
+    function updateReport() {
+        document.getElementById('totalEarnings').textContent = `Total Earnings: $${totalEarnings.toFixed(2)}`;
+        document.getElementById('totalExpenses').textContent = `Total Expenses: $${totalExpenses.toFixed(2)}`;
+        document.getElementById('balance').textContent = `Balance: $${(totalEarnings - totalExpenses).toFixed(2)}`;
+    }
+
+    function addToTable(tableId, type, amount, source, date, details) {
+        const tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+        const newRow = tableBody.insertRow();
+        newRow.insertCell().textContent = type;
+        newRow.insertCell().textContent = `$${amount.toFixed(2)}`;
+        newRow.insertCell().textContent = source;
+        newRow.insertCell().textContent = date;
+        newRow.insertCell().textContent = details;
+
+        const deleteCell = newRow.insertCell();
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-btn';
+        deleteButton.onclick = function() {
+            deleteEntry(this);
+        };
+        deleteCell.appendChild(deleteButton);
+    }
+
+    function deleteEntry(button) {
+        const row = button.parentElement.parentElement;
+        const amount = parseFloat(row.cells[1].textContent.replace('$', ''));
+        const type = row.cells[0].textContent;
+
+        if (type === 'Earning') {
+            totalEarnings -= amount;
+        } else if (type === 'Expense') {
+            totalExpenses -= amount;
+        }
+
+        row.parentElement.removeChild(row);
+        removeEntry(type, amount, row.cells[2].textContent, row.cells[3].textContent);
+        updateReport();
+    }
+
+    function filterEntries() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert('Please select both start and end dates.');
+            return;
+        }
+
+        filterTable('earningsTable', startDate, endDate);
+        filterTable('expensesTable', startDate, endDate);
+    }
+
+    function clearFilter() {
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+        filterTable('earningsTable', '', '');
+        filterTable('expensesTable', '', '');
+    }
+
+    function filterTable(tableId, startDate, endDate) {
+        const tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+        const rows = tableBody.getElementsByTagName('tr');
+
+        for (let i = 0; i < rows.length; i++) {
+            const dateCell = rows[i].cells[3].textContent;
+            const rowDate = new Date(dateCell);
+
+            if (startDate && endDate) {
+                if (rowDate >= new Date(startDate) && rowDate <= new Date(endDate)) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            } else {
+                rows[i].style.display = '';
+            }
+        }
+    }
+
+    function printReports() {
+        window.print();
+    }
+
+    function saveEntry(entry) {
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+        entries.push(entry);
+        localStorage.setItem('entries', JSON.stringify(entries));
+    }
+
+    function removeEntry(type, amount, source, date) {
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+        entries = entries.filter(entry => !(entry.type === type && entry.amount === amount && entry.source === source && entry.date === date));
+        localStorage.setItem('entries', JSON.stringify(entries));
+    }
+
+    function loadEntries() {
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+
+        entries.forEach(entry => {
+            if (entry.type === 'Earning') {
+                totalEarnings += entry.amount;
+                addToTable('earningsTable', 'Earning', entry.amount, entry.source, entry.date, entry.details);
+            } else if (entry.type === 'Expense') {
+                totalExpenses += entry.amount;
+                addToTable('expensesTable', 'Expense', entry.amount, entry.source, entry.date, entry.details);
+            }
+        });
+    }
+</script>
+
+
+</body>
+</html>
